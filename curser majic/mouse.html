@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+    <link rel="logo" href="alen.png">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" type="x-icon" href="alen.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CURSER MAGIC</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<head>
+<style>
+body {
+margin: 0;
+display: flex;
+justify-content: center;
+align-items: center;
+height: 100vh;
+background-color: #000;
+overflow: hidden;
+}
+canvas {
+position: absolute;
+top: 0;
+left: 0;
+}
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+let particles = [];
+function Particle(x, y) {
+this.x = x;
+this.y = y;
+this.size = Math.random() * 5 + 1;
+this.speedX = Math.random() * 2 - 1;
+this.speedY = Math.random() * 2 - 1;
+this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+this.update = function() {
+this.x += this.speedX;
+this.y += this.speedY;
+if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+};
+this.draw = function() {
+ctx.fillStyle = this.color;
+ctx.beginPath();
+ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+ctx.fill();
+};
+}
+function initParticles(event) {
+for (let i = 0; i < 10; i++) {
+const x = event.clientX;
+const y = event.clientY;
+particles.push(new Particle(x, y));
+}
+}
+function animate() {
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+particles.forEach(particle => {
+particle.update();
+particle.draw();
+});
+requestAnimationFrame(animate);
+}
+canvas.addEventListener('mousemove', initParticles);
+animate();
+window.addEventListener('resize', () => {
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+});
+</script>
+</body>
+</html>
